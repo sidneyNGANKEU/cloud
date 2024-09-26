@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Étape pour récupérer le code depuis le référentiel GitHub
+                git branch: 'master', credentialsId: 'votre_id_de_credentials', url: 'git@github.com:HassanAAMARA/projet-fullstack.git'
+            }
+        }
+        stage('Build and Push Docker Images') {
+            steps {
+                // Construire et pousser l'image frontend
+                script {
+                    docker.build('frontend_app:react', './frontend')
+                    docker.withRegistry('https://registry.example.com', 'dockerhub_credentials') {
+                        docker.image('frontend_app:react').push('latest')
+                    }
+                }
+                // Construire et pousser l'image backend
+                script {
+                    docker.build('backend_api:django', './backend')
+                    docker.withRegistry('https://registry.example.com', 'dockerhub_credentials') {
+                        docker.image('backend_api:django').push('latest')
+                    }
+                }
+            }
+        }
+        stage('Deploy Infrastructure with Terraform') {
+            steps {
+                // Étape pour déployer l'infrastructure avec Terraform
+                sh 'terraform init'
+                sh 'terraform plan -out=tfplan'
+                sh 'terraform apply tfplan'
+            }
+        }
+        stage('Deploy Docker Containers') {
+            steps {
+                // Démarrer les conteneurs Docker avec Docker Compose
+                sh 'docker-compose -f docker-compose.yml up -d'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                // Ajoutez ici les étapes pour exécuter les tests
+            }
+        }
+        // Ajoutez d'autres étapes selon vos besoins
+    }
+    post {
+        always {
+            // Toujours arrêter les conteneurs Docker après le pipeline
+            sh 'docker-compose -f docker-compose.yml down'
+        }
+    }
+}

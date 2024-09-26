@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  frontend_app:
+    container_name: frontend_app
+    image: frontend_app:react
+    build: ./frontend
+    ports:
+      - "3000:3000"
+      
+  database:
+    container_name: database
+    image: mysql:8.3.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydatabase
+    ports:
+      - "3306:3306" 
+
+  backend_api:
+    container_name: backend_api
+    image: backend_api:django
+    build: ./backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+    restart: always 
