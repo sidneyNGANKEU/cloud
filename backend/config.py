@@ -1,9 +1,9 @@
 # AWS-RDS or Local machine - MySql
 DB_NAME = 'mydatabase'
 DB_USER = 'root'
-DB_PASSWORD =''
+DB_PASSWORD ='root'
 DB_PORT = 3306
-DB_HOST = 'localhost'
+DB_HOST = 'database'
 
 # AWS-S3
 AWS_S3_ACCESS_KEY_ID = '13W9OBW1PLM1HQRPS331'

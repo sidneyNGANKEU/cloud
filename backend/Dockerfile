@@ -1,15 +1,23 @@
-FROM python:3.8.4 
+FROM python:3.10-slim
 
-WORKDIR /backend
 
-ENV PYTHONUNBUFFERED 1 
+RUN apt-get update && apt-get install -y \
+    default-libmysqlclient-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
 
-RUN pip install -r requirements.txt
+WORKDIR /app
 
-COPY . .
+
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+COPY . /app/
+
 
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver"]
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
