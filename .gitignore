@@ -2,3 +2,10 @@
 .env
 env
 env*
+db_root_password.txt*
+database*
+access.txt*
+region.txt*
+secret.txt*
+endpointurl.txt*
+bucketname.txt*
